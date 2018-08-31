@@ -15,9 +15,9 @@ Unsupervised Clustering using deep convolutional neural networks
 
 ### File Illustration
 This repo is divided into 3 directories. 
- 1. The 'Code' directory contains all codes and jupyter notebooks.
- 2. The 'Data' directory is place where data is in.
- 3. The 'Results' directory contains all results plots, CSVs, Logs and etc.
+ 1. The `Code` directory contains all codes and jupyter notebooks.
+ 2. The `Data` directory is place where data is in.
+ 3. The `Results` directory contains all results plots, CSVs, Logs and etc.
 
 
-### Result
+### Sample Results
