@@ -58,7 +58,9 @@ def create_model(width, height, channels):
 
     conv_17 = Conv2D(filters=1, kernel_size=(1, 1), strides=(1, 1), activation='sigmoid', padding='same')(conv_16)
 
-    model = Model(inputs=input_layer, outputs=conv_17)
+    output_layer = Multiply()([input_layer, conv_17])
+
+    model = Model(inputs=input_layer, outputs=output_layer)
     model.compile(optimizer=Adam(lr=1e-4), loss=hamming_dist)
 
     model.summary()
