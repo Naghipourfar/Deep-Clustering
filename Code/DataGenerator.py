@@ -79,15 +79,7 @@ def rotate_point(xs, ys, degree, origin=(0, 0)):
 
 def plot_shapes(xs, ys, idx=0):
     result_path = "../Results/train/" + "image-" + str(idx) + ".png"
-    # plt.close("all")
-    # plt.figure(figsize=(512 / MY_DPI, 512 / MY_DPI), dpi=MY_DPI)
-    # plt.figure(figsize=(15, 10))
-    # plt.plot(xs, ys, 'o')
     plt.axis('off')
-    # plt.grid()
-    # plt.legend()
-    # plt.xlim((-2, 2))
-    # plt.ylim((-2, 2))
     plt.savefig(result_path, dpi=MY_DPI)
     data = plt.imread(result_path)[:, :, 0]
     plt.imsave(result_path, data, cmap=cm.gray)
@@ -96,7 +88,6 @@ def plot_shapes(xs, ys, idx=0):
 def main():
     for idx in range(100):
         plt.close("all")
-        # plt.figure(figsize=(15, 10))
         plt.figure(figsize=(512 / MY_DPI, 512 / MY_DPI), dpi=MY_DPI)
         number_of_objects = 5
         shapes = ['square ring', 'ring']
