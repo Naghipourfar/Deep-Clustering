@@ -1,3 +1,7 @@
+import os
+
+import matplotlib.pyplot as plt
+import pandas as pd
 from keras.layers import *
 from keras.models import *
 from keras.models import Model
@@ -72,5 +76,25 @@ def hamming_dist(y_true, y_pred):
     return K.sum(K.abs(y_pred - y_true))
 
 
+def convert_all_data_to_csv(data_dir="../Results/train/"):
+    x = []
+    n_training_data = len(os.listdir(data_dir)) - 2
+    for i in range(n_training_data):
+        data_path = data_dir + "image-" + str(n_training_data) + ".png"
+        matrix = plt.imread(data_path)[:, :, 0]
+        matrix = np.reshape(matrix, newshape=(1, -1))
+        x.append(matrix)
+    x = np.array(x)
+    x = x.reshape((x.shape[0], x.shape[2]))
+    x = pd.DataFrame(x)
+    x.to_csv("../Data/train.csv")
+
+
 if __name__ == '__main__':
+    print("Loading Data...")
+    data = pd.read_csv("../Data/train.csv", index_col="Unnamed: 0")
+    print("Data has been loaded.")
+    print("Data's shape:\t", data.shape)
+    data = np.reshape(data.values, newshape=(-1, 128, 128))
+    # convert_all_data_to_csv()
     model = create_model(128, 128, 1)

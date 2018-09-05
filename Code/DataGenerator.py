@@ -88,7 +88,7 @@ def plot_shapes(xs, ys, idx=0):
 def main():
     for idx in range(100):
         plt.close("all")
-        plt.figure(figsize=(512 / MY_DPI, 512 / MY_DPI), dpi=MY_DPI)
+        plt.figure(figsize=(128 / MY_DPI, 128 / MY_DPI), dpi=MY_DPI)
         number_of_objects = 5
         shapes = ['square ring', 'ring']
         xs, ys = [], []
