@@ -10,6 +10,7 @@ Unsupervised Clustering using deep convolutional neural networks
 </div>
 
 ### Introduction
+A tensorflow implementation of the paper: Human-Like Clustering with Deep Convolutional Neural Networks https://arxiv.org/pdf/1706.05048.pdf 
 
 ### Getting Started
 
