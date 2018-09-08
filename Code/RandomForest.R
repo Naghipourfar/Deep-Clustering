@@ -1,0 +1,10 @@
+data <- read.csv(file = "/Users/Future/Desktop/Summer-2018/Research Interests/Bioinformatics/Deep-Clustering/Data/3mermotif_na.csv", sep = ",")
+rf.fit <- randomForest::randomForest(x = data[, 2:73], y = NULL, ntree = 1000, proximity = TRUE, oob.prox = TRUE)
+hclust.rf <- hclust(as.dist(1-rf.fit$proximity), method = "ward.D2")
+clusterCut <- cutree(hclust.rf, 23)
+table(clusterCut)
+pdf("/Users/Future/Desktop/hclust.pdf", width=40, height=15)
+plot(hclust.rf)
+dev.off()
+
+clue::kmedoids(as.dist(1-rf.fit$proximity), k = 23)
