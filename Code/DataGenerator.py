@@ -1,9 +1,11 @@
+import h5py
 import math
 import random
 
 import matplotlib.cm as cm
 import matplotlib.pyplot as plt
 import numpy as np
+import pandas as pd
 
 """
     Created by Mohsen Naghipourfar on 9/2/18.
@@ -108,6 +110,11 @@ def main():
         plt.plot(xs, ys, 'o')
         plot_shapes(xs, ys, idx)
 
+
+def create_hdf5():
+    data = pd.read_csv("../Data/3mermotif_na.csv", index_col="icgc_sample_id")
+    with h5py.File("../Data/3mermotif.h5", "w ") as f:
+        f.create_dataset("")
 
 if __name__ == '__main__':
     # x, y = [1], [1]
