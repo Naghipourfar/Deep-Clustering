@@ -1,14 +1,7 @@
-import numpy as np
 import pandas as pd
 
-import tensorflow as tf
-import matplotlib.pyplot as plt
-import keras
-
-from keras.layers import Input, Dense, Dropout, BatchNormalization
-from keras.models import Model
-from keras.callbacks import History, CSVLogger
 from sklearn.cluster import DBSCAN
+
 """
     Created by Mohsen Naghipourfar on 9/6/18.
     Email : mn7697np@gmail.com or naghipourfar@ce.sharif.edu
