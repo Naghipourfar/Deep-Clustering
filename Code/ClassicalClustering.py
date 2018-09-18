@@ -7,7 +7,7 @@ from sklearn.cluster import DBSCAN, KMeans
 from sklearn.decomposition import PCA, FastICA
 from sklearn.mixture import GMM
 from sklearn.preprocessing import LabelEncoder, normalize
-
+import seaborn as sns
 """
     Created by Mohsen Naghipourfar on 9/15/18.
     Email : mn7697np@gmail.com or naghipourfar@ce.sharif.edu
@@ -66,6 +66,7 @@ def k_medians(data, k=10):
     km = kmedians.kmedians(data, np.random.normal(0.0, 0.1, size=[k, data.shape[1]]))
     km.process()
     print(km.get_clusters())
+    return km
 
 
 def gaussian_mixture_models(data, k=10):
@@ -96,16 +97,49 @@ def plot_points(data, labels, predictions=None):
     plt.show()
 
 
-def plot_stacks(table, alg_name=None):
+def make_mapping_matrix(table):
     df = pd.DataFrame()
-    print(table["prediction"].describe())
+    # print(table["prediction"].describe())
     cancer_types = table["cancer_type"].unique()
     for cancer_type in cancer_types:
         x = table[table["cancer_type"] == cancer_type]
         for i in range(table["prediction"].max() + 1):
             y = x[x["prediction"] == i]
             df.loc[cancer_type, i] = len(y)
-    x = df
+    return df
+
+
+def plot_heatmaps(mapped_table, alg_name=None):
+    cancer_types = mapped_table.transpose().columns
+    cluster_labels = mapped_table.columns
+    mapped_table = np.array(mapped_table)
+    plt.close("all")
+
+    fig, ax = plt.subplots()
+    im = ax.imshow(mapped_table.transpose())
+
+    ax.set_xticks(np.arange(len(cancer_types)))
+    ax.set_yticks(np.arange(len(cluster_labels)))
+    ax.set_xticklabels(cancer_types)
+    ax.set_yticklabels(cluster_labels)
+
+    plt.setp(ax.get_xticklabels(), rotation=45, ha="right",
+             rotation_mode="anchor")
+
+    ax.set_xticks(np.arange(mapped_table.shape[0] + 1) - .5, minor=True)
+    ax.set_yticks(np.arange(mapped_table.shape[1] + 1) - .5, minor=True)
+    ax.grid(which="minor", color="w", linestyle='-', linewidth=1)
+    ax.tick_params(which="minor", bottom=False, left=False)
+    plt.title("Results for %s" % alg_name)
+    plt.xlabel("Cancer Types")
+    plt.ylabel("Cluster Labels")
+    plt.tight_layout()
+    plt.savefig("../Results/Presentation/Heatmaps/%s.pdf" % alg_name, bbox_inches="tight")
+    print("Heatmap for %s is finished" % alg_name)
+
+
+def plot_stacks(mapped_table, alg_name=None):
+    x = mapped_table
     N = len(x.index)
     width = .95
     xs = [i for i in range(N)]
@@ -113,15 +147,14 @@ def plot_stacks(table, alg_name=None):
     plt.figure(figsize=(15, 10))
     for cluster in x.columns:
         plt.bar(xs, x.loc[:, cluster], width=width, bottom=None, label=cluster)
-    # plt.bar(xs, x['C'].iloc[:N], width=width, bottom=x['A'].iloc[:N], label="C")
-    # plt.bar(xs, x['G'].iloc[:N], width=width, bottom=x['A'].iloc[:N] + x['C'].iloc[:N], label="G")
-    # plt.bar(xs, x['T'].iloc[:N], width=width, bottom=x['A'].iloc[:N] + x['C'].iloc[:N] + x['G'].iloc[:N], label="T")
     plt.legend()
     plt.xticks(xs, x.transpose().columns, rotation=90)
     plt.title("Results for %s" % alg_name)
     plt.xlabel("Cancer Types")
     plt.ylabel("Sample Frequency")
-    plt.savefig("../Results/%s_transposed.pdf" % alg_name)
+    plt.tight_layout()
+    plt.savefig("../Results/Presentation/Stacked Barplots/%s.pdf" % alg_name, bbox_inches="tight")
+    print("Stacked Bar plot for %s is finished" % alg_name)
 
 
 def normalize_data(data):
@@ -175,11 +208,32 @@ if __name__ == '__main__':
     data = data.drop(["cancer_type"], axis=1)
     data = normalize_data(data.values)
 
-    # plot_points(data, cancer_types)
-    for k in range(18, 19):
-        predictions = hdbscan_algorithm(data)
-        table = pd.DataFrame({"cancer_type": cancer_types, "prediction": predictions})
-        table.loc[:, 'prediction'] += 1
-        plot_stacks(table, "HDBSCAN")
-    # print('Accuracy: {}'.format(accuracy_score(cancer_types, predictions, normalize=False)))
-    # print(y_pred.describe())
+    for alg_name in ["Kmeans", "GMM", "DBSCAN", "HDBSCAN"]:
+        for k in range(2, 24):
+            if alg_name == "Kmeans":
+                predictions = k_means(data, k)
+                new_alg_name = alg_name + " (k = %d)" % k
+            elif alg_name == "GMM":
+                predictions = gaussian_mixture_models(data, k)
+                new_alg_name = alg_name + " (k = %d)" % k
+            elif alg_name == "KMediods":
+                predictions = k_medians(data, k)
+                new_alg_name = alg_name + " (k = %d)" % k
+            else:
+                if k > 2:
+                    continue
+                if alg_name == "DBSCAN":
+                    min_pts = 5
+                    eps = .3
+                    predictions = dbscan(data)
+                    new_alg_name = alg_name + " (minPts = %d, eps = %.1f)" % (min_pts, eps)
+                else:
+                    min_cluster_size = 5
+                    predictions = hdbscan_algorithm(data)
+                    new_alg_name = alg_name
+            table = pd.DataFrame({"cancer_type": cancer_types, "prediction": predictions})
+            if alg_name.endswith("SCAN"):
+                table.loc[:, 'prediction'] += 1
+            mapped_table = make_mapping_matrix(table)
+            plot_stacks(mapped_table, new_alg_name)
+            plot_heatmaps(mapped_table, new_alg_name)
