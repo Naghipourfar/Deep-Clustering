@@ -89,8 +89,10 @@ def convert_all_data_to_csv(data_dir="../Results/train/"):
     x = pd.DataFrame(x)
     x.to_csv("../Data/train.csv")
 
+
 def create_binary_matrix(image):
     pass
+
 
 if __name__ == '__main__':
     print("Loading Data...")
