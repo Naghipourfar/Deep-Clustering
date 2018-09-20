@@ -50,16 +50,19 @@ def load_data(data_path="../Data/3mermotif_na.csv"):
     return np.array(data)
 
 
-def plot_results(path="../Results/encoded.csv"):
+def plot_results(path="../Results/encoded2D.csv"):
     encoded_output = pd.read_csv(path, header=None)
     print(encoded_output.describe())
-    x, y, z = encoded_output[0], encoded_output[1], encoded_output[2]
-    fig = plt.figure()
-    ax = fig.add_subplot(111, projection='3d')
-    ax.scatter3D(x, y, z, c='Red')
-    ax.set_xlim(0, x.max())
-    ax.set_ylim(0, y.max())
-    ax.set_zlim(0, z.max())
+    x, y= encoded_output[0], encoded_output[1]
+    plt.plot(x, y, 'o')
+    plt.title("Data Representation using SAE")
+    plt.savefig("../Results/SAE2D.pdf")
+    # fig = plt.figure()
+    # ax = fig.add_subplot(111, projection='3d')
+    # ax.scatter3D(x, y, z, c='Red')
+    # ax.set_xlim(0, x.max())
+    # ax.set_ylim(0, y.max())
+    # ax.set_zlim(0, z.max())
     plt.show()
 
 
