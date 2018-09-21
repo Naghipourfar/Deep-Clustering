@@ -84,16 +84,17 @@ def plot_points(data, labels, predictions=None):
     # plt.xlabel("1st PCA")
     # plt.ylabel("2nd PCA")
     # plt.scatter(x, y, c=labels, s=50, cmap='viridis')
+    # plt.legend(loc="best")
     # plt.savefig("/Users/Future/Desktop/PCA.pdf")
     # plt.show()
     fig = plt.figure()
     ax = fig.add_subplot(111, projection='3d')
-    ax.scatter3D(x, y, z)
-    ax.set_xlim(0, x.max())
-    ax.set_ylim(0, y.max())
-    ax.set_zlim(0, z.max())
+    ax.scatter3D(x, y, z, c=labels)
+    # ax.set_xlim(0, x.max())
+    # ax.set_ylim(0, y.max())
+    # ax.set_zlim(0, z.max())
 
-    plt.savefig("/Users/Future/Desktop/test.pdf")
+    plt.savefig("/Users/Future/Desktop/PCA-3.pdf")
     plt.show()
 
 
@@ -117,6 +118,7 @@ def plot_heatmaps(mapped_table, alg_name=None):
 
     fig, ax = plt.subplots()
     im = ax.imshow(mapped_table.transpose())
+    plt.colorbar(im)
 
     ax.set_xticks(np.arange(len(cancer_types)))
     ax.set_yticks(np.arange(len(cluster_labels)))
@@ -203,16 +205,20 @@ def make_table(table, filename=None, write=True):
 
 
 if __name__ == '__main__':
-    data = pd.read_csv("../Data/3mermotif_na.csv", index_col="icgc_sample_id")
+    data = pd.read_csv("../Data/5mermotif.csv", index_col="icgc_sample_id")
     cancer_types = data['cancer_type']
     data = data.drop(["cancer_type"], axis=1)
+    data.dropna(how="all", axis=1, inplace=True)
+    data.dropna(how="any", axis=1, inplace=True)
     data = normalize_data(data.values)
 
-    for alg_name in ["Kmeans", "GMM", "DBSCAN", "HDBSCAN"]:
-        for k in range(2, 24):
+    # plot_points(data, cancer_types)
+
+    for alg_name in ["Kmeans"]:
+        for k in range(18, 19):
             if alg_name == "Kmeans":
                 predictions = k_means(data, k)
-                new_alg_name = alg_name + " (k = %d)" % k
+                new_alg_name = "K-medians" + " (k = %d)" % k
             elif alg_name == "GMM":
                 predictions = gaussian_mixture_models(data, k)
                 new_alg_name = alg_name + " (k = %d)" % k
@@ -223,13 +229,13 @@ if __name__ == '__main__':
                 if k > 2:
                     continue
                 if alg_name == "DBSCAN":
-                    min_pts = 5
+                    min_pts = 3
                     eps = .3
-                    predictions = dbscan(data)
+                    predictions = dbscan(data, minimum_points=min_pts, eps=eps)
                     new_alg_name = alg_name + " (minPts = %d, eps = %.1f)" % (min_pts, eps)
                 else:
                     min_cluster_size = 5
-                    predictions = hdbscan_algorithm(data)
+                    predictions = hdbscan_algorithm(data, min_cluster_size=min_cluster_size)
                     new_alg_name = alg_name
             table = pd.DataFrame({"cancer_type": cancer_types, "prediction": predictions})
             if alg_name.endswith("SCAN"):
