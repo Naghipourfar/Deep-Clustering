@@ -2,6 +2,7 @@ import matplotlib.pyplot as plt
 import numpy as np
 import pandas as pd
 from keras import Model
+from keras.callbacks import CSVLogger
 from keras.layers import Input, Dense, Dropout, BatchNormalization
 from sklearn.model_selection import train_test_split
 from sklearn.preprocessing import normalize
@@ -44,10 +45,13 @@ def stacked_auto_encoder(n_features, n_latent):
     return model
 
 
-def load_data(data_path="../Data/3mermotif_na.csv"):
+def load_data(data_path="../Data/5mermotif.csv"):
+
     data = pd.read_csv(data_path, index_col="icgc_sample_id")
+    cancer_types = data["cancer_type"]
+    data.drop("cancer_type", axis=1, inplace=True)
     data = normalize(data.values, norm='max', axis=0)
-    return np.array(data)
+    return np.array(data), cancer_types
 
 
 def plot_results(path="../Results/encoded2D.csv"):
@@ -76,30 +80,32 @@ def plot_results_2d(path="../Results/encoded2D.csv"):
 
 
 def main():
-    data = load_data()
+    data, labels = load_data()
     print(data.shape)
-    model = stacked_auto_encoder(data.shape[1], 2)
+    n_latent = 12
+    model = stacked_auto_encoder(data.shape[1], n_latent)
 
     x_train, x_test = train_test_split(data, test_size=0.25, shuffle=True)
     print(x_train.shape)
     print(x_test.shape)
-
+    csv_logger = CSVLogger("../Results/SAE.log")
     model.fit(
         x=x_train,
         y=x_train,
         epochs=500,
         batch_size=64,
         validation_data=(x_test, x_test),
-        verbose=2
+        verbose=2, callbacks=[csv_logger]
     )
 
     layer_name = "encoded"
     encoded_layer_model = Model(inputs=model.input, outputs=model.get_layer(layer_name).output)
     encoded_output = encoded_layer_model.predict(data)
-    model.save("../Results/SAE2d.h5")
-    np.savetxt(X=encoded_output, fname="../Results/" + "encoded2D.csv", delimiter=",")
+    model.save("../Results/SAE.h5")
+    np.savetxt(X=encoded_output, fname="../Results/" + "encoded%dD.csv" % n_latent, delimiter=",")
 
 
 if __name__ == '__main__':
-    plot_results()
-    plot_results_2d()
+    main()
+    # plot_results()
+    # plot_results_2d()
