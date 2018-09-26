@@ -7,8 +7,6 @@ from sklearn.cluster import DBSCAN, KMeans
 from sklearn.decomposition import PCA, FastICA
 from sklearn.mixture import GMM
 from sklearn.preprocessing import LabelEncoder, normalize
-import seaborn as sns
-
 
 """
     Created by Mohsen Naghipourfar on 9/15/18.
