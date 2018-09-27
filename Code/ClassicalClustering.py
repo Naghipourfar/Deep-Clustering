@@ -32,6 +32,10 @@ def pca_analysis(data, n_components=2):
         return x[:, 0], x[:, 1], x[:, 2]
 
 
+def model_based():
+    pass
+
+
 def ica_analysis(data, n_components=2):
     ica = FastICA(n_components=n_components)
     x = ica.fit_transform(data)
@@ -45,10 +49,6 @@ def hdbscan_algorithm(data, min_cluster_size=18):
     clusterer = hdbscan.HDBSCAN(min_cluster_size=min_cluster_size)
     cluster_labels = clusterer.fit_predict(data)
     return cluster_labels
-
-
-def model_based():
-    pass
 
 
 def k_means(data, k=10):
