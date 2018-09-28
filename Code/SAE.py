@@ -46,7 +46,6 @@ def stacked_auto_encoder(n_features, n_latent):
 
 
 def load_data(data_path="../Data/5mermotif.csv"):
-
     data = pd.read_csv(data_path, index_col="icgc_sample_id")
     cancer_types = data["cancer_type"]
     data.drop("cancer_type", axis=1, inplace=True)
@@ -57,7 +56,7 @@ def load_data(data_path="../Data/5mermotif.csv"):
 def plot_results(path="../Results/encoded2D.csv"):
     encoded_output = pd.read_csv(path, header=None)
     print(encoded_output.describe())
-    x, y= encoded_output[0], encoded_output[1]
+    x, y = encoded_output[0], encoded_output[1]
     plt.plot(x, y, 'o')
     plt.title("Data Representation using SAE")
     plt.savefig("../Results/SAE2D.pdf")
