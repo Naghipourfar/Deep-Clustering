@@ -53,6 +53,15 @@ def load_data(data_path="../Data/5mermotif.csv"):
     return np.array(data), cancer_types
 
 
+def plot_results_2d(path="../Results/encoded2D.csv"):
+    encoded_output = pd.read_csv(path, header=None)
+    print(encoded_output.describe())
+    x, y = encoded_output[0], encoded_output[1]
+
+    plt.plot(x, y, 'o')
+    plt.show()
+
+
 def plot_results(path="../Results/encoded2D.csv"):
     encoded_output = pd.read_csv(path, header=None)
     print(encoded_output.describe())
@@ -66,15 +75,6 @@ def plot_results(path="../Results/encoded2D.csv"):
     # ax.set_xlim(0, x.max())
     # ax.set_ylim(0, y.max())
     # ax.set_zlim(0, z.max())
-    plt.show()
-
-
-def plot_results_2d(path="../Results/encoded2D.csv"):
-    encoded_output = pd.read_csv(path, header=None)
-    print(encoded_output.describe())
-    x, y = encoded_output[0], encoded_output[1]
-
-    plt.plot(x, y, 'o')
     plt.show()
 
 
