@@ -18,14 +18,6 @@ for mer in mer_num:
         # x.dropna(how="any", axis=1, inplace=True)
         print(str(mer) + "mer" + type + "\t:\t" + str(x.shape))
 
-# x.to_csv("../Data/3mermotif_na.csv")
-# dbscan = DBSCAN(eps=0.3)
-# y_pred = dbscan.fit_predict(x.values)
-# print(y_pred.shape)
-# print(pd.Series(y_pred).value_counts())
-# print(pd.DataFrame(y_pred).describe())
-#
-
 
 
 
