@@ -1,7 +1,5 @@
 import pandas as pd
 
-from sklearn.cluster import DBSCAN
-
 """
     Created by Mohsen Naghipourfar on 9/6/18.
     Email : mn7697np@gmail.com or naghipourfar@ce.sharif.edu
@@ -17,7 +15,3 @@ for mer in mer_num:
         # x.dropna(how="all", axis=1, inplace=True)
         # x.dropna(how="any", axis=1, inplace=True)
         print(str(mer) + "mer" + type + "\t:\t" + str(x.shape))
-
-
-
-
